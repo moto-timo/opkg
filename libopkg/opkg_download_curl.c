@@ -106,13 +106,13 @@ static char *replace_token_in_str(const char *str, const char *token,
          */
         return xstrdup(str);
 
-    size_t str_len = strlen(str);
     size_t replacement_len = strlen(replacement);
-
+    size_t str_len = strlen(str);
     size_t token_len = strlen(token);
-    unsigned int token_idx = found_token - str;
 
-    size_t replaced_str_len = str_len - (strlen(token) - strlen(replacement));
+    size_t replaced_str_len = str_len - (token_len - replacement_len);
+
+    unsigned int token_idx = found_token - str;
     char *replaced_str = xmalloc((replaced_str_len + 1) * sizeof(char));
 
     /* first copy the string part *before* the substring to replace */
@@ -121,7 +121,8 @@ static char *replace_token_in_str(const char *str, const char *token,
     memmove(replaced_str + token_idx, replacement, replacement_len);
     /* finally complete the string with characters following the token */
     memmove(replaced_str + token_idx + replacement_len,
-            str + token_idx + token_len, strlen(str + token_idx + token_len));
+            str + token_idx + token_len,
+            (replaced_str_len - token_idx - replacement_len));
 
     replaced_str[replaced_str_len] = '\0';
 
