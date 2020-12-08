@@ -116,14 +116,11 @@ static char *replace_token_in_str(const char *str, const char *token,
     char *replaced_str = xmalloc((replaced_str_len + 1) * sizeof(char));
 
     /* first copy the string part *before* the substring to replace */
-    strncpy(replaced_str, str, token_idx);
-    /* then copy the replacement at the same position than the token to replace
-     */
-    strncpy(replaced_str + token_idx, replacement, strlen(replacement));
-    /* finally complete the string with characters following the token to
-     * replace
-     */
-    strncpy(replaced_str + token_idx + replacement_len,
+    memmove(replaced_str, str, token_idx);
+    /* then copy the replacement to the same position than the token */
+    memmove(replaced_str + token_idx, replacement, replacement_len);
+    /* finally complete the string with characters following the token */
+    memmove(replaced_str + token_idx + replacement_len,
             str + token_idx + token_len, strlen(str + token_idx + token_len));
 
     replaced_str[replaced_str_len] = '\0';
