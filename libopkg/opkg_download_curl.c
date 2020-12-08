@@ -113,7 +113,7 @@ static char *replace_token_in_str(const char *str, const char *token,
     unsigned int token_idx = found_token - str;
 
     size_t replaced_str_len = str_len - (strlen(token) - strlen(replacement));
-    char *replaced_str = xmalloc(replaced_str_len * sizeof(char));
+    char *replaced_str = xmalloc((replaced_str_len + 1) * sizeof(char));
 
     /* first copy the string part *before* the substring to replace */
     strncpy(replaced_str, str, token_idx);
