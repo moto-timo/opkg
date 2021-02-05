@@ -62,6 +62,8 @@ AC_ARG_ENABLE(pathfinder,
     [want_pathfinder="$enableval"], [want_pathfinder="no"])
 dnl Check for libpathfinder
 if test "x$want_pathfinder" = "xyes"; then
+  AC_MSG_WARN(Pathfinder-pki x509 path validation is depracted and will be \
+removed in future releases.)
   PKG_CHECK_MODULES([PATHFINDER], [pathfinder-openssl dbus-1 openssl])
   if test -n "$PATHFINDER_CFLAGS$PATHFINDER_LIBS"; then
     AC_DEFINE(HAVE_PATHFINDER, 1, [we have pathfinder])
@@ -134,6 +136,8 @@ AC_ARG_ENABLE(openssl,
     [want_openssl="$enableval"], [want_openssl="no"])
 
 if test "x$want_openssl" = "xyes"; then
+  AC_MSG_WARN(OpenSSL signature-checking support is depracted and will be \
+removed in future releases. Consider using GPGME (--enable-gpg) instead.)
   AC_DEFINE(HAVE_OPENSSL, 1, [Define if you want OpenSSL support])
   NEED_SSL_LIBS="yes"
 fi
