@@ -36,81 +36,6 @@
 #include "opkg_message.h"
 #include "opkg_openssl.h"
 
-#ifdef HAVE_PATHFINDER
-#include <libpathfinder.h>
-#include <stdlib.h>
-#include "xfuncs.h"
-
-/* This callback is called instead of X509_verify_cert to perform path
- * validation on a certificate using pathfinder.
- */
-int pathfinder_verify_callback(X509_STORE_CTX * ctx, void *arg)
-{
-    char *errmsg;
-    const char *hex = "0123456789ABCDEF";
-    size_t size = i2d_X509(ctx->cert, NULL);
-    unsigned char *keybuf, *iend;
-    iend = keybuf = xmalloc(size);
-    i2d_X509(ctx->cert, &iend);
-    char *certdata_str = xmalloc(size * 2 + 1);
-    unsigned char *cp = keybuf;
-    char *certdata_str_i = certdata_str;
-    while (cp < iend) {
-        unsigned char ch = *cp++;
-        *certdata_str_i++ = hex[(ch >> 4) & 0xf];
-        *certdata_str_i++ = hex[ch & 0xf];
-    }
-    *certdata_str_i = 0;
-    free(keybuf);
-
-    const char *policy = "2.5.29.32.0"; // anyPolicy
-    int validated = pathfinder_dbus_verify(certdata_str, policy, 0, 0, &errmsg);
-
-    if (!validated)
-        opkg_msg(ERROR, "Path verification failed: %s.\n", errmsg);
-
-    free(certdata_str);
-    free(errmsg);
-
-    return validated;
-}
-
-int pkcs7_pathfinder_verify_signers(PKCS7 * p7)
-{
-    STACK_OF(X509) * signers;
-    int i, ret = 1;             /* signers are verified by default */
-
-    signers = PKCS7_get0_signers(p7, NULL, 0);
-
-    for (i = 0; i < sk_X509_num(signers); i++) {
-        X509_STORE_CTX ctx = {
-            .cert = sk_X509_value(signers, i),
-        };
-
-        if (!pathfinder_verify_callback(&ctx, NULL)) {
-            /* Signer isn't verified ! goto jail; */
-            ret = 0;
-            break;
-        }
-    }
-
-    sk_X509_free(signers);
-    return ret;
-}
-#else
-/* Dummy functions */
-int pathfinder_verify_callback(X509_STORE_CTX * ctx, void *arg)
-{
-    opkg_msg(ERROR, "Pathfinder support not enabled.\n");
-    return 0;
-}
-
-int pkcs7_pathfinder_verify_signers(PKCS7 * p7)
-{
-    opkg_msg(ERROR, "Pathfinder support not enabled.\n");
-    return 0;
-}
-#endif                          /* HAVE_PATHFINDER */
 
 static X509_STORE *setup_verify(char *CAfile, char *CApath)
 {
@@ -210,15 +135,6 @@ int opkg_verify_openssl_signature(const char *file, const char *sigfile)
         opkg_msg(ERROR, "Can't read signature file %s (Corrupted ?).\n",
                  sigfile);
         goto verify_file_end;
-    }
-    if (opkg_config->check_x509_path) {
-        r = pkcs7_pathfinder_verify_signers(p7);
-        if (!r) {
-            opkg_msg(ERROR,
-                     "pkcs7_pathfinder_verify_signers: "
-                     "Path verification failed.\n");
-            goto verify_file_end;
-        }
     }
     // Open the Package file to authenticate
     indata = BIO_new_file(file, "rb");

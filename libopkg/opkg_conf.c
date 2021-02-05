@@ -98,9 +98,6 @@ static opkg_option_t options[] = {
     {"signature_ca_file", OPKG_OPT_TYPE_STRING, &_conf.signature_ca_file},
     {"signature_ca_path", OPKG_OPT_TYPE_STRING, &_conf.signature_ca_path},
 #endif
-#if defined(HAVE_PATHFINDER)
-    {"check_x509_path", OPKG_OPT_TYPE_BOOL, &_conf.check_x509_path},
-#endif
 #if defined(HAVE_CURL)
     {"connect_timeout_ms", OPKG_OPT_TYPE_INT, &_conf.connect_timeout_ms},
     {"transfer_timeout_ms", OPKG_OPT_TYPE_INT, &_conf.transfer_timeout_ms},
@@ -685,9 +682,6 @@ int opkg_conf_load(void)
 
     opkg_config->restrict_to_default_dest = 0;
     opkg_config->default_dest = NULL;
-#if defined(HAVE_PATHFINDER)
-    opkg_config->check_x509_path = 1;
-#endif
     if (!opkg_config->offline_root)
         opkg_config->offline_root = xstrdup(getenv("OFFLINE_ROOT"));
 

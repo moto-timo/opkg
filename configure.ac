@@ -55,24 +55,6 @@ else
   PKG_CHECK_MODULES([LIBARCHIVE], [libarchive])
 fi
 
-dnl extra argument: --enable-pathfinder
-AC_ARG_ENABLE(pathfinder,
-              AC_HELP_STRING([--enable-pathfinder], [Enable libpathfinder support.
-      [[default=no]] ]),
-    [want_pathfinder="$enableval"], [want_pathfinder="no"])
-dnl Check for libpathfinder
-if test "x$want_pathfinder" = "xyes"; then
-  AC_MSG_WARN(Pathfinder-pki x509 path validation is depracted and will be \
-removed in future releases.)
-  PKG_CHECK_MODULES([PATHFINDER], [pathfinder-openssl dbus-1 openssl])
-  if test -n "$PATHFINDER_CFLAGS$PATHFINDER_LIBS"; then
-    AC_DEFINE(HAVE_PATHFINDER, 1, [we have pathfinder])
-  fi
-  AC_SUBST(PATHFINDER_CFLAGS)
-  AC_SUBST(PATHFINDER_LIBS)
-fi
-AM_CONDITIONAL(HAVE_PATHFINDER, test "x$want_pathfinder" = "xyes")
-
 # check for xz
 AC_ARG_ENABLE(xz,
               AC_HELP_STRING([--enable-xz], [Enable xz compressor support

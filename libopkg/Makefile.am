@@ -2,7 +2,7 @@
 AM_CFLAGS=-Wall -DHOST_CPU_STR=\"@host_cpu@\" -DDATADIR=\"@datadir@\" \
 	-DSYSCONFDIR=\"@sysconfdir@\" -DVARDIR=\"@localstatedir@\" \
 	-I$(top_srcdir)	$(LIBARCHIVE_CFLAGS) $(BIGENDIAN_CFLAGS) $(CURL_CFLAGS) \
-	$(GPGME_CFLAGS) $(GPGERR_CFLAGS) $(PATHFINDER_CFLAGS) $(SOLVER_CFLAGS)
+	$(GPGME_CFLAGS) $(GPGERR_CFLAGS) $(SOLVER_CFLAGS)
 
 libopkg_includedir=$(includedir)/libopkg
 
@@ -69,6 +69,6 @@ endif
 
 libopkg_la_LIBADD = $(LIBARCHIVE_LIBS) \
 		    $(CURL_LIBS) $(GPGME_LIBS) $(GPGERR_LIBS) $(OPENSSL_LIBS) \
-		    $(PATHFINDER_LIBS) $(SOLVER_LIBS)
+		    $(SOLVER_LIBS)
 
 libopkg_la_LDFLAGS = -version-info 1:0:0

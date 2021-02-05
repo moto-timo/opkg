@@ -128,16 +128,6 @@ static char *replace_token_in_str(const char *str, const char *token,
 
     return replaced_str;
 }
-
-#if defined(HAVE_PATHFINDER) && defined(HAVE_OPENSSL)
-static CURLcode curl_ssl_ctx_function(CURL * curl, void *sslctx, void *parm)
-{
-    SSL_CTX *ctx = (SSL_CTX *) sslctx;
-    SSL_CTX_set_cert_verify_callback(ctx, pathfinder_verify_callback, parm);
-
-    return CURLE_OK;
-}
-#endif                          /* HAVE_PATHFINDER && HAVE_OPENSSL */
 #endif                          /* HAVE_SSLCURL */
 
 /** \brief create_file_stamp: creates stamp for file
@@ -430,12 +420,6 @@ static CURL *opkg_curl_init(curl_progress_func cb, void *data)
              * CURLOPT_SSL_VERIFYPEER default is nonzero (curl => 7.10)
              */
             setopt(CURLOPT_SSL_VERIFYPEER, 0);
-#if defined(HAVE_PATHFINDER) && defined(HAVE_OPENSSL)
-        else if (opkg_config->check_x509_path) {
-                setopt(CURLOPT_SSL_CTX_FUNCTION, curl_ssl_ctx_function);
-                setopt(CURLOPT_SSL_CTX_DATA, NULL);
-        }
-#endif
 
         /* certification authority file and/or path */
         if (opkg_config->ssl_ca_file)

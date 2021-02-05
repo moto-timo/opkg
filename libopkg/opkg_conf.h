@@ -155,11 +155,6 @@ typedef struct opkg_conf {
      */
     char *http_auth;
 
-    /* pathfinder options: used only when opkg is configured with
-     * '--enable-pathfinder', otherwise always NULL or 0 as above.
-     */
-    int check_x509_path;
-
     /* proxy options */
     char *http_proxy;
     char *https_proxy;
