@@ -41,20 +41,6 @@ int opkg_verify_gpg_signature(const char *file, const char *sigfile)
 }
 #endif
 
-#ifdef HAVE_OPENSSL
-#include "opkg_openssl.h"
-#else
-/* Dummy openssl signature verification. */
-int opkg_verify_openssl_signature(const char *file, const char *sigfile)
-{
-    (void)file;
-    (void)sigfile;
-
-    opkg_msg(ERROR, "OpenSSL signature checking not supported\n");
-    return -1;
-}
-#endif
-
 int opkg_verify_md5sum(const char *file, const char *md5sum)
 {
     int r;
@@ -104,8 +90,6 @@ int opkg_verify_signature(const char *file, const char *sigfile)
             || (strcmp(opkg_config->signature_type, "gpg-asc") == 0);
     if (use_gpg)
         return opkg_verify_gpg_signature(file, sigfile);
-    else if (strcmp(opkg_config->signature_type, "openssl") == 0)
-        return opkg_verify_openssl_signature(file, sigfile);
 
     opkg_msg(ERROR, "signature_type option '%s' not understood.\n",
              opkg_config->signature_type);

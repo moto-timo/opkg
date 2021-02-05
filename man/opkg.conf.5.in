@@ -74,9 +74,6 @@ Performs a signature check against a package. The signature file should be next 
 \fBcheck_signature\fP
 Performs a signature check against the package index. The signature file should be next to the package index (default is 0)
 .TP
-\fBcheck_x509_path\fP
-Validates the x509 certificate all the way back to the Certificate Authority (default is 0)
-.TP
 \fBcombine\fP
 Combines upgrade and install operations, this may be needed to resolve dependency issues. Only available for the internal solver backend (default is 0).
 .TP
@@ -198,12 +195,6 @@ User name to use for proxy authentication.
 .TP
 \fBquery-all\fP
 Executes a query against all packages from all repositories, not just install packages (default is 0).
-.TP
-\fBsignature_ca_file\fP
-Path to the CA certificate file.
-.TP
-\fBsignature_ca_path\fP
-Path to certificates directory.
 .TP
 \fBsignature_type\fP
 The type of signatures to check against.

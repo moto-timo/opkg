@@ -35,9 +35,6 @@
 #include "file_util.h"
 #include "xfuncs.h"
 
-#ifdef HAVE_OPENSSL
-#include "opkg_openssl.h"
-#endif
 
 /*
  * Make curl an instance variable so we don't have to instanciate it
@@ -368,9 +365,6 @@ static CURL *opkg_curl_init(curl_progress_func cb, void *data)
         curl = curl_easy_init();
 
 #ifdef HAVE_SSLCURL
-#ifdef HAVE_OPENSSL
-        openssl_init();
-#endif                          /* HAVE_OPENSSL */
 
         int r;
 

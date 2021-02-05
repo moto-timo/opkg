@@ -36,10 +36,6 @@ if HAVE_SHA256
 opkg_sources += sha256.c
 opkg_headers += sha256.h
 endif
-if HAVE_OPENSSL
-opkg_sources += opkg_openssl.c
-opkg_headers += opkg_openssl.h
-endif
 if HAVE_GPGME
 opkg_sources += opkg_gpg.c
 opkg_headers += opkg_gpg.h

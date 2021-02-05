@@ -111,20 +111,6 @@ if test "x$want_sha256" = "xyes"; then
 fi
 AM_CONDITIONAL(HAVE_SHA256, test "x$want_sha256" = "xyes")
 
-# check for openssl
-AC_ARG_ENABLE(openssl,
-              AC_HELP_STRING([--enable-openssl], [Enable signature checking with OpenSSL
-      [[default=no]] ]),
-    [want_openssl="$enableval"], [want_openssl="no"])
-
-if test "x$want_openssl" = "xyes"; then
-  AC_MSG_WARN(OpenSSL signature-checking support is depracted and will be \
-removed in future releases. Consider using GPGME (--enable-gpg) instead.)
-  AC_DEFINE(HAVE_OPENSSL, 1, [Define if you want OpenSSL support])
-  NEED_SSL_LIBS="yes"
-fi
-AM_CONDITIONAL(HAVE_OPENSSL, test "x$want_openssl" = "xyes")
-
 # check for libssl-curl
 AC_ARG_ENABLE(ssl-curl,
               AC_HELP_STRING([--enable-ssl-curl], [Enable certificate authentication with curl

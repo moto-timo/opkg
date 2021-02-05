@@ -163,9 +163,6 @@ typedef struct opkg_conf {
     char *proxy_user;
     char *proxy_passwd;
 
-    char *signature_ca_file;
-    char *signature_ca_path;
-
     hash_table_t pkg_hash;
     hash_table_t file_hash;
     hash_table_t obs_file_hash;

@@ -94,10 +94,6 @@ static opkg_option_t options[] = {
     {"gpg_dir", OPKG_OPT_TYPE_STRING, &_conf.gpg_dir},
     {"gpg_trust_level", OPKG_OPT_TYPE_STRING, &_conf.gpg_trust_level},
 #endif
-#if defined(HAVE_OPENSSL)
-    {"signature_ca_file", OPKG_OPT_TYPE_STRING, &_conf.signature_ca_file},
-    {"signature_ca_path", OPKG_OPT_TYPE_STRING, &_conf.signature_ca_path},
-#endif
 #if defined(HAVE_CURL)
     {"connect_timeout_ms", OPKG_OPT_TYPE_INT, &_conf.connect_timeout_ms},
     {"transfer_timeout_ms", OPKG_OPT_TYPE_INT, &_conf.transfer_timeout_ms},
