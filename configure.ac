@@ -281,7 +281,11 @@ AC_FUNC_UTIME_NULL
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([memmove memset mkdir regcomp strchr strcspn strdup strerror strndup strrchr strstr strtol strtoul sysinfo utime])
 
-CLEAN_DATE=`date +"%B %Y" | tr -d '\n'`
+if ! test -z "$SOURCE_DATE_EPOCH" ; then
+    CLEAN_DATE=`LC_ALL=C date -d @$SOURCE_DATE_EPOCH +"%B %Y" | tr -d '\n'`
+else
+    CLEAN_DATE=`date +"%B %Y" | tr -d '\n'`
+fi
 
 AC_SUBST([CLEAN_DATE])
 
