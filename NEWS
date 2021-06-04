@@ -1,3 +1,10 @@
+opkg-0.4.5
+==========
+
+- Allow CLEAN_DATE to be derived from SOURCE_DATE_EPOCH (build reproducibility)
+
+- Announce the deprecation of x509 signature checking through OpenSSL in the next release.
+
 opkg-0.4.4
 ==========
 
