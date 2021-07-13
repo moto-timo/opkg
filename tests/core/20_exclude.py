@@ -7,9 +7,13 @@
 #
 
 import os
+import re
 import opk, cfg, opkgcl
 
 opk.regress_init()
+
+_, version = opkgcl.opkgcl("--version")
+libsolv = True if "libsolv" in version else False
 
 o = opk.OpkGroup()
 o.add(Package="a1")
@@ -36,6 +40,17 @@ if opkgcl.is_installed("a1"):
     opk.fail("Package 'a1' installed despite being excluded.")
 if opkgcl.is_installed("c"):
     opk.fail("Package 'c' installed despite required package being excluded.")
+
+# Re-do 'c' install, but capture stdout this time to make sure that we have a
+# message indicating that 'a1' being excluded is preventing 'c' installation.
+# The solvers indicate this case with different messages.
+status, stdout = opkgcl.opkgcl("--force-postinstall install c --add-exclude a1")
+if libsolv:
+    if not re.search(r"package a1-([^ ]*) can only be installed by a direct request", stdout):
+        opk.fail("[libsolv] Package 'c' install should indicate 'a1' only installable by direct request")
+else:
+    if not re.search(r"exclude required package a1 at users request", stdout):
+        opk.fail("[internalsolv] Package 'c' install should indicate 'a1' was excluded")
 
 opkgcl.install("b", "--add-exclude 'a*'")
 if not opkgcl.is_installed("b"):
