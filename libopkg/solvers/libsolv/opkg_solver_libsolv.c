@@ -567,10 +567,6 @@ static void populate_available_repos(libsolv_solver_t *libsolv_solver)
     for (i = 0; i < available_pkgs->len; i++) {
         pkg_t *pkg = available_pkgs->pkgs[i];
 
-        /* if the package is marked as excluded, skip it */
-        if (str_list_contains(&opkg_config->exclude_list, pkg->name, 1))
-            continue;
-
         /* if the package is installed or unpacked, skip it */
         if (pkg->state_status == SS_INSTALLED ||
             pkg->state_status == SS_UNPACKED ||
@@ -634,6 +630,15 @@ static void populate_available_repos(libsolv_solver_t *libsolv_solver)
             what = pool_str2id(libsolv_solver->pool, pkg->name, 1);
             queue_push2(&libsolv_solver->solver_jobs, SOLVER_SOLVABLE_NAME
                         | SOLVER_DISFAVOR, what);
+        }
+
+        /* if the package is marked as excluded, blacklist it */
+        if (str_list_contains(&opkg_config->exclude_list, pkg->name, 1)) {
+            opkg_message(DEBUG2, "Blacklist package due to exclusion: %s\n",
+                         pkg->name);
+            what = pool_str2id(libsolv_solver->pool, pkg->name, 1);
+            queue_push2(&libsolv_solver->solver_jobs, SOLVER_SOLVABLE_NAME
+                        | SOLVER_BLACKLIST, what);
         }
 
         /* if the --force-depends option is specified make dependencies weak */
