@@ -374,8 +374,6 @@ void opkg_download_cleanup(void)
 
 static CURL *opkg_curl_init(curl_progress_func cb, void *data)
 {
-    int r;
-
     if (curl == NULL) {
         curl = curl_easy_init();
 
@@ -383,6 +381,8 @@ static CURL *opkg_curl_init(curl_progress_func cb, void *data)
 #ifdef HAVE_OPENSSL
         openssl_init();
 #endif                          /* HAVE_OPENSSL */
+
+        int r;
 
         if (opkg_config->ssl_engine) {
             /* use crypto engine */
