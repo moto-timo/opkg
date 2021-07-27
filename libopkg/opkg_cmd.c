@@ -1146,6 +1146,7 @@ static int opkg_search_cmd(int argc, char **argv)
     file_list_t *installed_files;
     file_list_elt_t *iter;
     file_info_t *installed_file;
+    int found_match = 0;
 
     if (argc < 1) {
         return -1;
@@ -1163,14 +1164,21 @@ static int opkg_search_cmd(int argc, char **argv)
         for (iter = file_list_first(installed_files); iter;
                 iter = file_list_next(installed_files, iter)) {
             installed_file = (file_info_t *)iter->data;
-            if (fnmatch(argv[0], installed_file->path, 0) == 0)
+            if (fnmatch(argv[0], installed_file->path, 0) == 0) {
+                found_match = 1;
                 print_pkg(pkg);
+            }
         }
 
         pkg_free_installed_files(pkg);
     }
 
     pkg_vec_free(installed);
+
+    if (!found_match) {
+        opkg_msg(ERROR, "no path found matching pattern '%s'", argv[0]);
+        return -1;
+    }
 
     return 0;
 }

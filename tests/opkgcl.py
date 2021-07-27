@@ -114,6 +114,16 @@ def update():
     return opkgcl('update')[0]
 
 
+def search(glob):
+    (status, output) = opkgcl('search {}'.format(glob))
+    if status == 255:
+        raise FileNotFoundError()
+    elif status != 0:
+        raise OSError(status)
+    else:
+        return output.strip().split('\n')
+
+
 def upgrade(params=None, flags=''):
     if params:
         return opkgcl('{} --force-postinstall upgrade {}'.format(flags, params))[0]

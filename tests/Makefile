@@ -43,6 +43,7 @@ REGRESSION_TESTS := core/01_install.py \
 		    core/41_info_fields.py \
 		    core/42_info_description.py \
 		    core/43_add_ignore_recommends.py \
+		    core/44_search.py \
 		    regress/issue26.py \
 		    regress/issue31.py \
 		    regress/issue32.py \
