@@ -650,7 +650,7 @@ static void populate_available_repos(libsolv_solver_t *libsolv_solver)
     pkg_vec_free(available_pkgs);
 }
 
-static void printsolution_callback(struct _Pool *pool, void *data, int type, const char *str)
+static void printsolution_callback(struct s_Pool *pool, void *data, int type, const char *str)
 {
     opkg_message(ERROR, "%s\n", str);
 }
