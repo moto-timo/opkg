@@ -854,7 +854,8 @@ int opkg_conf_load(void)
     }
 
     if (opkg_config->volatile_cache) {
-        sprintf_alloc(&tmp, "%s/%s", opkg_config->cache_dir, "volatile");
+        sprintf_alloc(&tmp, "%s/%s.%d", opkg_config->cache_dir, "volatile",
+                      (int)getpid());
         free(opkg_config->cache_dir);
         opkg_config->cache_dir = tmp;
     }
