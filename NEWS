@@ -3,6 +3,29 @@
 This NEWS file for the opkg project attempts to conform to the [KeepAChangelog](https://keepachangelog.com/en/1.0.0/) standard.
 
 
+## opkg-0.5.0
+
+### Added
+- Added support for zstandard data compression (disabled by default).
+
+### Changed
+- Opkg will no longer attempt to remove the cache directory, if it already doesn't exist. This avoids a spurious error in that case.
+- Increased minimum libsolv version from `0.6.25` to `0.7.14`, which adds support for blacklisting packages during the solve.
+- Use libsolv's package blacklisting feature when `--add-exclude` is requested by the user, so that libsolv can provide a more meaningful error message in the case of solve failures.
+- `opkg` will now return a non-zero error code and an error message when `opkg search` returns no results - which is more consistent with dpkg behavior.
+- `opkg_archive` will now propagate error messages and error codes from libarchive, when archiving operations fail.
+- `opkg` operations now use volatile cache directories which are namespaced by their process ID, enabling multiple read-only operations to exist concurrently.
+
+### Removed
+- Removed pathfinder x509 certificate checking, because the feature doesn't seem to be used by the community and the library is obsolescent.
+- Removed openssl signature verification, because the feature doesn't seem to be used by the community and GPG feed signing should be preferred.
+
+### Fixed
+- Fixed a couple of GCC 8 compiler warnings regarding dangerous string operations in libopkg.
+- Fixed a GCC 8 compiler warning about unused variables in `opkg_download_curl.c`.
+- Fixed a GCC 8 compiler warning about parameter visibility in `opkg_solver_libsolv.c`.
+
+
 ## opkg-0.4.5
 
 - Allow CLEAN_DATE to be derived from SOURCE_DATE_EPOCH (build reproducibility)
