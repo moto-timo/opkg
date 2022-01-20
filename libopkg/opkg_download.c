@@ -256,6 +256,31 @@ static char *get_pkg_url(pkg_t * pkg)
     return url;
 }
 
+void pkg_remove_signature(pkg_t * pkg)
+{
+    char *pkg_url;
+    char *sig_url;
+    char *sig_ext;
+    char *sig_file;
+
+    pkg_url = get_pkg_url(pkg);
+    if (pkg_url) {
+
+        if (strcmp(opkg_config->signature_type, "gpg-asc") == 0)
+            sig_ext = "asc";
+        else
+            sig_ext = "sig";
+
+        sprintf_alloc(&sig_url, "%s.%s", pkg_url, sig_ext);
+        free(pkg_url);
+
+        sig_file = get_cache_location(sig_url);
+        unlink(sig_file);
+        free(sig_file);
+        free(sig_url);
+    }
+}
+
 /** \brief pkg_download_signature: download a package signature
  *  \details First checks if the signature has already been downloaded
  *

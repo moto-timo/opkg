@@ -36,6 +36,7 @@ int opkg_download(const char *src, const char *dest_file_name,
 char *opkg_download_cache(const char *src, curl_progress_func cb, void *data);
 int opkg_download_pkg(pkg_t * pkg);
 int opkg_download_pkg_to_dir(pkg_t * pkg, const char *dir);
+void pkg_remove_signature(pkg_t * pkg);
 char *pkg_download_signature(pkg_t * pkg);
 
 /*
