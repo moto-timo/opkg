@@ -1531,7 +1531,11 @@ int pkg_verify(pkg_t * pkg)
             /* Exit with soft error 1 if the package doesn't exist.
              * This allows the caller to download it without nasty
              * messages in the error log.
+             * Remove any matching signature file if it exists.
              */
+            if (opkg_config->check_pkg_signature) {
+                pkg_remove_signature(pkg);
+            }
             return 1;
         }
         else {
@@ -1591,6 +1595,9 @@ int pkg_verify(pkg_t * pkg)
 	opkg_msg(NOTICE, "Removing corrupt package file %s.\n",
              pkg->local_filename);
 	unlink(pkg->local_filename);
+        if (opkg_config->check_pkg_signature) {
+            pkg_remove_signature(pkg);
+        }
 	return err;
     }
     else
