@@ -25,6 +25,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <libgen.h>
+#include <sys/stat.h>
 
 #include "opkg_download.h"
 #include "opkg_message.h"
@@ -255,12 +256,20 @@ static char *get_pkg_url(pkg_t * pkg)
     return url;
 }
 
+/** \brief pkg_download_signature: download a package signature
+ *  \details First checks if the signature has already been downloaded
+ *
+ *  \param pkg the package associated with the signature
+ *  \return The signature filename if success, NULL if error occurs
+ *
+ */
 char *pkg_download_signature(pkg_t * pkg)
 {
     char *pkg_url;
     char *sig_url;
     char *sig_ext;
     char *sig_file;
+    struct stat sig_stat;
 
     pkg_url = get_pkg_url(pkg);
     if (!pkg_url)
@@ -274,7 +283,11 @@ char *pkg_download_signature(pkg_t * pkg)
     sprintf_alloc(&sig_url, "%s.%s", pkg_url, sig_ext);
     free(pkg_url);
 
-    sig_file = opkg_download_cache(sig_url, NULL, NULL);
+    sig_file = get_cache_location(sig_url);
+    if (stat(sig_file, &sig_stat)) {
+        free(sig_file);
+        sig_file = opkg_download_cache(sig_url, NULL, NULL);
+    }
     free(sig_url);
 
     return sig_file;
