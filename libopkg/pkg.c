@@ -711,7 +711,22 @@ static void pkg_formatted_field(FILE * fp, pkg_t * pkg, const char *field, const
                 }
                 fprintf(fp, "\n");
             }
-        } else {
+        }
+        else if (strcasecmp(field, "Pre-Depends") == 0) {
+            if (pkg->pre_depends_count) {
+                fprintf(fp, "Pre-Depends:");
+                for (j = 0, i = 0; i < depends_count; i++) {
+                    if (pkg->depends[i].type != PREDEPEND)
+                        continue;
+                    str = pkg_depend_str(pkg, i);
+                    fprintf(fp, "%s %s", j == 0 ? "" : ",", str);
+                    free(str);
+                    j++;
+                }
+                fprintf(fp, "\n");
+            }
+        }
+        else {
             goto UNKNOWN_FMT_FIELD;
         }
         break;
@@ -858,6 +873,7 @@ void pkg_formatted_info(FILE * fp, pkg_t * pkg, const char *fields_filter)
     pkg_formatted_field(fp, pkg, "Package", NULL);
     pkg_formatted_field(fp, pkg, "Version", fields_filter);
     pkg_formatted_field(fp, pkg, "Depends", fields_filter);
+    pkg_formatted_field(fp, pkg, "Pre-Depends", fields_filter);
     pkg_formatted_field(fp, pkg, "Recommends", fields_filter);
     pkg_formatted_field(fp, pkg, "Suggests", fields_filter);
     pkg_formatted_field(fp, pkg, "Provides", fields_filter);
@@ -896,6 +912,7 @@ void pkg_print_status(pkg_t * pkg, FILE * file)
     pkg_formatted_field(file, pkg, "Package", NULL);
     pkg_formatted_field(file, pkg, "Version", NULL);
     pkg_formatted_field(file, pkg, "Depends", NULL);
+    pkg_formatted_field(file, pkg, "Pre-Depends", NULL);
     pkg_formatted_field(file, pkg, "Recommends", NULL);
     pkg_formatted_field(file, pkg, "Suggests", NULL);
     pkg_formatted_field(file, pkg, "Provides", NULL);
