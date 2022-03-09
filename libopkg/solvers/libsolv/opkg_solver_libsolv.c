@@ -416,6 +416,7 @@ static void pkg2solvable(pkg_t *pkg, Solvable *solvable_out, int installed)
                 solvable_out->requires = repo_addid_dep(repo,
                          solvable_out->requires, dependId,
                          SOLVABLE_PREREQMARKER);
+                break;
             case DEPEND:
                 opkg_msg(DEBUG2, "%s depends %s\n", pkg->name,
                          pool_dep2str(pool, dependId));
