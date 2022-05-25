@@ -44,6 +44,7 @@ REGRESSION_TESTS := core/01_install.py \
 		    core/42_info_description.py \
 		    core/43_add_ignore_recommends.py \
 		    core/44_search.py \
+		    core/45_install_preexisting.py \
 		    regress/issue26.py \
 		    regress/issue31.py \
 		    regress/issue32.py \
@@ -94,6 +95,7 @@ REGRESSION_TESTS := core/01_install.py \
 		    regress/issue11826.py \
 		    regress/issue13574.py \
 		    regress/issue13758.py \
+		    regress/issue14459.py \
 		    misc/filehash.py \
 		    misc/update_loses_autoinstalled_flag.py \
 		    misc/version_comparisons.py

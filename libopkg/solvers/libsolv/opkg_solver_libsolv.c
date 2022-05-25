@@ -90,6 +90,7 @@ int opkg_solver_install(int num_pkgs, char **pkg_names)
     char *name, *version;
     version_constraint_t constraint;
     Dataiterator di;
+    int found_match;
 
     libsolv_solver_t *solver = libsolv_solver_new();
     if (solver == NULL)
@@ -102,6 +103,8 @@ int opkg_solver_install(int num_pkgs, char **pkg_names)
     }
 
     for (i = 0; i < num_pkgs; i++) {
+        found_match = 0;
+
         strip_pkg_name_and_version(pkg_names[i], &name, &version, &constraint);
 
         dataiterator_init(&di, solver->pool, solver->repo_available, 0,
@@ -109,6 +112,33 @@ int opkg_solver_install(int num_pkgs, char **pkg_names)
         while (dataiterator_step(&di)) {
             libsolv_solver_add_job(solver, JOB_INSTALL, di.kv.str, version, constraint);
             dataiterator_skip_solvable(&di);
+            found_match = 1;
+        }
+
+        if (!found_match) {
+            /*
+             * pkg wasn't found in repo_available which would be ok if it is present in another repo
+             * such as repo_installed, repo_preferred or repo_to_install. But if not, then the user
+             * has asked to install an unknown package in which case we should error out.
+             */
+            int j;
+            found_match = 0;
+            Repo * repos_to_check[] = {solver->repo_installed, solver->repo_preferred, solver->repo_to_install};
+
+            for (j = 0; j < sizeof(repos_to_check)/sizeof(*repos_to_check); j++) {
+                dataiterator_init(&di, solver->pool, repos_to_check[j], 0,
+                          SOLVABLE_NAME | SOLVABLE_PROVIDES, name, SEARCH_GLOB);
+                if (dataiterator_step(&di)) {
+                    found_match = 1;
+                    break;
+                }
+            }
+
+            if (!found_match) {
+                opkg_msg(ERROR, "No candidates to install %s %s!\n", name, version);
+                err = -1;
+                goto CLEANUP;
+            }
         }
 
         dataiterator_free(&di);
