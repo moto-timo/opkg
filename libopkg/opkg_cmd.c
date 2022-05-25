@@ -1176,7 +1176,7 @@ static int opkg_search_cmd(int argc, char **argv)
     pkg_vec_free(installed);
 
     if (!found_match) {
-        opkg_msg(ERROR, "no path found matching pattern '%s'", argv[0]);
+        opkg_msg(ERROR, "no path found matching pattern '%s'\n", argv[0]);
         return -1;
     }
 
