@@ -34,12 +34,12 @@ checksums. Products are stored in the `opkg:dist/` directory.
 -h,--help
     Print this usage text and exit.
 -k,--signing-key KEY_ID
-	Specify a GPG private key ID (like 0xABCEDF), which will be used to sign
-	the dist archive. If not specified, the default gpg signing key will be
+    Specify a GPG private key ID (like 0xABCEDF), which will be used to sign
+    the dist archive. If not specified, the default gpg signing key will be
     used.
 -m,--manifest
-	Create a plaintext manifest file of all members in the dist archive.
-   (Useful for comparisons with previous releases.)
+    Create a plaintext manifest file of all members in the dist archive.
+    (Useful for comparing with previous releases.)
 
 # Positional Arguments
 DIST_COMMIT_HASH
