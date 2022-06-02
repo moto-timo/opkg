@@ -3,6 +3,16 @@
 This NEWS file for the opkg project attempts to conform to the [KeepAChangelog](https://keepachangelog.com/en/1.0.0/) standard.
 
 
+## opkg-0.6.0
+
+### Changed
+- When using package signature verification, the signature file is now only downloaded when (a) it is not present in the local cache or (b) the package file must be downloaded again. This makes signature verification more reliable in cases where the connection to the package feed is unreliable, or stored on a removable device that is not always connected.
+- Package `pre-depends` are now recorded in the opkg `status` file.
+- Package `pre-depends` are now considered when removing packages. Opkg will now (correctly) fail, when the user asks to remove a package which is a pre-depends of another installed package.
+- libsolv will now return a solver error if the user asks to install a package which does not exist in the feeds.
+- The `opkg search` command now prints a newline character at the end of its output when the search path cannot be found - which looks a little nicer when using opkg interactively.
+
+
 ## opkg-0.5.0
 
 ### Added
