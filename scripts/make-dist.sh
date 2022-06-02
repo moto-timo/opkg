@@ -28,7 +28,7 @@ usage() {
 $(basename ${BASH_SOURCE}) [--help] [-k KEY_ID] [-m] DIST_COMMIT_HASH
 
 Create a source distribution archive, signature file, release notes, and
-checksums. Products are stored in the `opkg:dist/` directory.
+checksums. Products are stored in the dist/ directory.
 
 # Options
 -h,--help
