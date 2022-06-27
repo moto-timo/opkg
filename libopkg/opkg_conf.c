@@ -906,7 +906,7 @@ void opkg_conf_deinit(void)
     int i;
     char **tmp;
 
-    if (opkg_config->tmp_dir)
+    if (opkg_config->tmp_dir && file_exists(opkg_config->tmp_dir))
         rm_r(opkg_config->tmp_dir);
 
     if (opkg_config->volatile_cache && file_exists(opkg_config->cache_dir))
