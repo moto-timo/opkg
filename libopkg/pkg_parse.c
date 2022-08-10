@@ -64,6 +64,32 @@ static void parse_conffiles(pkg_t * pkg, const char *cstr)
     conffile_list_append(&pkg->conffiles, file_name, md5sum);
 }
 
+static unsigned long parse_ulong(pkg_t *pkg, const char *field,
+                                 const char *line)
+{
+    unsigned long value = 0;
+    char *tmp, *endptr;
+
+    tmp = parse_simple(field, line);
+    if (!tmp) {
+        opkg_msg(ERROR, "Failed to parse %s line for %s\n", field, pkg->name);
+        return value;
+    }
+
+    errno = 0;
+    endptr = NULL;
+    value = strtoul(tmp, &endptr, 0);
+    /* strtoul won't reject negative values, so check the first character
+       for a minus sign. The string returned by parse_simple has leading
+       whitespace removed, so *tmp should be the first non-whitespace character
+    */
+    if (errno || (*endptr != '\0') || (*tmp == '-'))
+        opkg_msg(ERROR, "Failed to parse %s line for %s\n", field, pkg->name);
+
+    free(tmp);
+    return value;
+}
+
 static void parse_userfields(pkg_t *pkg, const char *cstr)
 {
     char name[1024], value[4096];
@@ -200,15 +226,11 @@ int pkg_parse_line(void *ptr, const char *line, uint mask)
         break;
 
     case 'I':
-        if ((mask & PFM_INSTALLED_SIZE) && is_field("Installed-Size", line)) {
-            char *tmp = parse_simple("Installed-Size", line);
-            pkg->installed_size = strtoul(tmp, NULL, 0);
-            free(tmp);
-        } else if ((mask & PFM_INSTALLED_TIME) && is_field("Installed-Time", line)) {
-            char *tmp = parse_simple("Installed-Time", line);
-            pkg->installed_time = strtoul(tmp, NULL, 0);
-            free(tmp);
-        } else if (opkg_config->verbose_status_file)
+        if ((mask & PFM_INSTALLED_SIZE) && is_field("Installed-Size", line))
+            pkg->installed_size = parse_ulong(pkg, "Installed-Size", line);
+        else if ((mask & PFM_INSTALLED_TIME) && is_field("Installed-Time", line))
+            pkg->installed_time = parse_ulong(pkg, "Installed-Time", line);
+        else if (opkg_config->verbose_status_file)
             userfield = 1;
         break;
 
@@ -254,11 +276,9 @@ int pkg_parse_line(void *ptr, const char *line, uint mask)
             pkg->section = parse_simple("Section", line);
         else if ((mask & PFM_SHA256SUM) && is_field("SHA256sum", line))
             pkg->sha256sum = parse_simple("SHA256sum", line);
-        else if ((mask & PFM_SIZE) && is_field("Size", line)) {
-            char *tmp = parse_simple("Size", line);
-            pkg->size = strtoul(tmp, NULL, 0);
-            free(tmp);
-        } else if ((mask & PFM_SOURCE) && is_field("Source", line))
+        else if ((mask & PFM_SIZE) && is_field("Size", line))
+            pkg->size = parse_ulong(pkg, "Size", line);
+        else if ((mask & PFM_SOURCE) && is_field("Source", line))
             pkg->source = parse_simple("Source", line);
         else if ((mask & PFM_STATUS) && is_field("Status", line))
             parse_status(pkg, line);

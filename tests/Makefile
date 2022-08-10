@@ -95,6 +95,7 @@ REGRESSION_TESTS := core/01_install.py \
 		    regress/issue11826.py \
 		    regress/issue13574.py \
 		    regress/issue13758.py \
+		    regress/issue14178.py \
 		    regress/issue14459.py \
 		    misc/filehash.py \
 		    misc/update_loses_autoinstalled_flag.py \
