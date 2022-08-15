@@ -1434,6 +1434,16 @@ void pkg_info_preinstall_check(void)
                 iter = niter, niter = file_list_next(installed_files, iter)) {
             file_info_t *installed_file = (file_info_t *)iter->data;
             file_hash_set_file_owner(installed_file->path, pkg);
+            /*
+             * Ensure that directories or symlink to directories used
+             * by multiple packages are tracked in the dir_hash.
+             * This is later used in remove operations to determine if
+             * the directory or symlink can be deleted.
+             */
+            if(file_is_dir(installed_file->path) || file_is_symlink_to_dir(installed_file->path))
+            {
+                dir_hash_add_ref_count(installed_file->path);
+            }
         }
         pkg_free_installed_files(pkg);
     }

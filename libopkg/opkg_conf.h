@@ -166,6 +166,7 @@ typedef struct opkg_conf {
     hash_table_t pkg_hash;
     hash_table_t file_hash;
     hash_table_t obs_file_hash;
+    hash_table_t dir_hash;
 } opkg_conf_t;
 
 enum opkg_option_type {

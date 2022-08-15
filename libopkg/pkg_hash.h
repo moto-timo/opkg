@@ -66,6 +66,10 @@ void file_hash_remove(const char *file_name);
 pkg_t *file_hash_get_file_owner(const char *file_name);
 void file_hash_set_file_owner(const char *file_name, pkg_t * pkg);
 
+int dir_hash_get_ref_count(const char* file_name);
+void dir_hash_add_ref_count(const char* file_name);
+void dir_hash_remove(const char* file_name);
+
 #ifdef __cplusplus
 }
 #endif

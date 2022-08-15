@@ -72,7 +72,20 @@ void remove_data_files_and_list(pkg_t * pkg)
             continue;
 
         if (file_is_dir(file_name)) {
-            str_list_append(&installed_dirs, file_name);
+            /*
+               Ensure that the directory is marked for deletion only if
+               no other installed package is using that directory.
+             */
+            if (dir_hash_get_ref_count(file_name) == 1)
+            {
+                str_list_append(&installed_dirs, file_name);
+                dir_hash_remove(file_name);
+            }
+            else
+            {
+                /* directory should get a new owner in the file hash*/
+                file_hash_remove(file_name);
+            }
             continue;
         } else if (file_is_symlink(file_name)) {
             char *link_target;
@@ -81,7 +94,21 @@ void remove_data_files_and_list(pkg_t * pkg)
             link_target = realpath(file_name, NULL);
             if (link_target) {
                 if ((xlstat(link_target, &target_stat) == 0) && S_ISDIR(target_stat.st_mode)) {
-                    str_list_append(&installed_dirs_symlinks, file_name);
+                    /*
+                     * Ensure that the symlink is marked for deletion
+                     * only if no other installed package uses that symlink.
+                     */
+                    if (dir_hash_get_ref_count(file_name) == 1)
+                    {
+                        str_list_append(&installed_dirs_symlinks, file_name);
+                        dir_hash_remove(file_name);
+                    }
+                    else
+                    {
+                        /* directory should get a new owner in the file hash*/
+                        file_hash_remove(file_name);
+                    }
+
                     free(link_target);
                     continue;
                 }

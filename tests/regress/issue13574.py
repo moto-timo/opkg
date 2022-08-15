@@ -48,7 +48,7 @@ if not os.path.exists("%s/lib64/testfile2.txt" % cfg.offline_root):
     opk.fail("Package 'a' removed package 'b' file")
 
 if not os.path.exists("%s/lib" % cfg.offline_root):
-    opk.fail("Package 'a' incorrectly removed symlink that should belong to Package 'b'")
+    opk.fail("Package 'a' incorrectly removed symlink that is in use by Package 'b'")
 
 opkgcl.remove('b')
 if os.path.exists("%s/lib64/testfile2.txt" % cfg.offline_root):

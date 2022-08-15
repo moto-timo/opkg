@@ -928,3 +928,33 @@ void file_hash_set_file_owner(const char *file_name, pkg_t * owning_pkg)
         owning_pkg->state_flag |= SF_FILELIST_CHANGED;
     }
 }
+
+int dir_hash_get_ref_count(const char* file_name)
+{
+    int* current_count = hash_table_get(&opkg_config->dir_hash, file_name);
+    if (!current_count)
+        return 0;
+
+    return *current_count;
+}
+
+void dir_hash_add_ref_count(const char* file_name)
+{
+    int* current_count = hash_table_get(&opkg_config->dir_hash, file_name);
+    if(!current_count)
+    {
+        current_count = xmalloc(sizeof(int*));
+        *current_count = 0;
+    }
+    *current_count = *current_count + 1;
+    hash_table_insert(&opkg_config->dir_hash, file_name, current_count);
+}
+
+void dir_hash_remove(const char* file_name)
+{
+    int* current_count = hash_table_get(&opkg_config->dir_hash, file_name);
+    if (current_count) {
+        hash_table_remove(&opkg_config->dir_hash, file_name);
+        free(current_count);
+    }
+}

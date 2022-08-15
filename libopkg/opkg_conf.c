@@ -770,6 +770,8 @@ int opkg_conf_load(void)
     pkg_hash_init();
     hash_table_init("file-hash", &opkg_config->file_hash,
                     OPKG_CONF_DEFAULT_HASH_LEN);
+    hash_table_init("dir-hash", &opkg_config->dir_hash,
+                    OPKG_CONF_DEFAULT_HASH_LEN);
     hash_table_init("obs-file-hash", &opkg_config->obs_file_hash,
                     OPKG_CONF_DEFAULT_HASH_LEN / 16);
 
@@ -871,6 +873,7 @@ int opkg_conf_load(void)
  err4:
     pkg_hash_deinit();
     hash_table_deinit(&opkg_config->file_hash);
+    hash_table_deinit(&opkg_config->dir_hash);
     hash_table_deinit(&opkg_config->obs_file_hash);
 
     r = rmdir(opkg_config->tmp_dir);
@@ -925,11 +928,13 @@ void opkg_conf_deinit(void)
     if (opkg_config->verbosity >= DEBUG) {
         hash_print_stats(&opkg_config->pkg_hash);
         hash_print_stats(&opkg_config->file_hash);
+        hash_print_stats(&opkg_config->dir_hash);
         hash_print_stats(&opkg_config->obs_file_hash);
     }
 
     pkg_hash_deinit();
     hash_table_deinit(&opkg_config->file_hash);
+    hash_table_deinit(&opkg_config->dir_hash);
     hash_table_deinit(&opkg_config->obs_file_hash);
 
     for (i = 0; options[i].name; i++) {
