@@ -1231,6 +1231,15 @@ file_list_t *pkg_get_installed_files(pkg_t * pkg)
             if (*file_name == '/') {
                 file_name++;
             }
+            // now we need to remove the trailing '/' in each entry to
+            // be consistent with pkg_write_filelist() that does the
+            // same.
+            int size = strlen(file_name);
+            if (size > 0 && file_name[size-1] == '/')
+            {
+                file_name[size-1] = '\0';
+            }
+
             sprintf_alloc(&installed_file_name, "%s%s", pkg->dest->root_dir,
                           file_name);
         } else {
