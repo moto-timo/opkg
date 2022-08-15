@@ -31,6 +31,7 @@ int xlstat(const char *file_name, struct stat *st);
 int file_exists(const char *file_name);
 int file_is_dir(const char *file_name);
 int file_is_symlink(const char *file_name);
+int file_is_symlink_to_dir(const char *file_name);
 char *file_readlink_alloc(const char *file_name);
 char *file_read_line_alloc(FILE * file);
 int file_link(const char *src, const char *dest);

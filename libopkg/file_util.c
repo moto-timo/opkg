@@ -96,6 +96,22 @@ int file_is_symlink(const char *file_name)
     return S_ISLNK(st.st_mode);
 }
 
+int file_is_symlink_to_dir(const char *file_name)
+{
+    int is_symlink_to_dir = 0;
+    if(file_is_symlink(file_name)) {
+        char *link_target;
+        struct stat target_stat;
+
+        link_target = realpath(file_name, NULL);
+        if (link_target) {
+            is_symlink_to_dir = (xlstat(link_target, &target_stat) == 0) && S_ISDIR(target_stat.st_mode);
+            free(link_target);
+        }
+    }
+    return is_symlink_to_dir;
+}
+
 char *file_readlink_alloc(const char *file_name)
 {
     struct stat st;

@@ -907,12 +907,18 @@ void file_hash_set_file_owner(const char *file_name, pkg_t * owning_pkg)
 {
     pkg_t *old_owning_pkg;
 
+    const char* long_file_name = file_name;
     file_name = strip_offline_root(file_name);
 
     old_owning_pkg = hash_table_get(&opkg_config->file_hash, file_name);
     hash_table_insert(&opkg_config->file_hash, file_name, owning_pkg);
 
-    if (old_owning_pkg) {
+    /*
+     * Multiple packages can claim ownership of a directory or a
+     * symlink to a directory. Therefore, do not remove the file_name
+     * from old_owning_pkg's list file in such cases.
+     */
+    if (old_owning_pkg && !file_is_dir(long_file_name) && !file_is_symlink_to_dir(long_file_name)) {
         if (!old_owning_pkg->installed_files)
             pkg_get_installed_files(old_owning_pkg);
         file_list_remove_elt(old_owning_pkg->installed_files, file_name);

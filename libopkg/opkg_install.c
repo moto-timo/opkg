@@ -67,6 +67,20 @@ static int update_file_ownership(pkg_t * new_pkg, pkg_t * old_pkg)
 
         if (!owner || (owner == old_pkg) || obs)
             file_hash_set_file_owner(new_file->path, new_pkg);
+
+        /*
+         * If the path is a directory or a symlink to a directory, it
+         * can be owned by multiple packages without clashes.
+         * Therefore, ensure that the path gets written to the filelist
+         * of every package that installs it, even if it already exists
+         * on the system.
+         */
+        int existing_is_dir = file_is_dir(new_file->path);
+        int existing_is_symlink = file_is_symlink_to_dir(new_file->path);
+        if ((existing_is_dir && S_ISDIR(new_file->mode)) ||
+                (existing_is_symlink && S_ISDIR(new_file->mode)))
+            file_hash_set_file_owner(new_file->path, new_pkg);
+
     }
 
     if (old_pkg) {
