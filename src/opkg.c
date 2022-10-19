@@ -323,7 +323,7 @@ static void usage()
     printf("\twhatprovides [-A] [pkgname|glob]+\n");
     printf("\twhatconflicts [-A] [pkgname|glob]+\n");
     printf("\twhatreplaces [-A] [pkgname|glob]+\n");
-    printf("\tverify [pkg|glob]               Verifies the intrgrity of <pkg>, or all packages if omitted by\n");
+    printf("\tverify [pkg|glob]               Verifies the integrity of <pkg>, or all packages if omitted by\n");
     printf("\t                                comparing the md5sum of each file with the information stored\n");
     printf("\t                                on the opkg metadata database\n");
     printf("\t-v, --version                   Print version\n");
