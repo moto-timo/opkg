@@ -3,6 +3,17 @@
 This NEWS file for the opkg project attempts to conform to the [KeepAChangelog](https://keepachangelog.com/en/1.0.0/) standard.
 
 
+## opkg-0.6.1
+
+### Changed
+- Opkg will no longer complain when trying to clean up the temporary directory, if the directory does not exist.
+
+### Fixed
+- Fixed a SEGFAULT when parsing package indexes with invalid `Size` or `Installed-Size` fields. These indexes will now produce a comprehensible error.
+- Fixed an inconsistecy in .list generation where files would sometimes be entered with/without a trailing slash. The trailng slash should now always be removed.
+- Fixed [a bug](https://bugzilla.yoctoproject.org/show_bug.cgi?id=10461) in package removal, where empty common directories would be left on disk, even after all owning packages were removed.
+
+
 ## opkg-0.6.0
 
 ### Changed
