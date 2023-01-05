@@ -53,7 +53,7 @@ else
     exit 1
 fi
 
-GPG="$GPGCMD --no-options --homedir $GPGHOMEDIR"
+GPG="$GPGCMD --homedir $GPGHOMEDIR"
 
 # Gpg home dir isn't created automatically when --homedir option is used
 if [ ! -e "$GPGHOMEDIR" ]; then
