@@ -30,6 +30,7 @@ config.guess
 config.log
 config.status
 config.sub
+INSTALL
 
 # Auto-generated config header and timestamp
 config.h

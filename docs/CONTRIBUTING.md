@@ -70,6 +70,8 @@ autoconf
 make
 ```
 
+For more information about configuring projects with autoconf, please reference the [autoconf documentation](https://www.gnu.org/software/autoconf/manual/autoconf-2.71/html_node/Basic-Installation.html).
+
 4. (Optional) Install opkg to your system.
 
 It is not required that you install opkg to test your changes, but you can do so with the following steps.
