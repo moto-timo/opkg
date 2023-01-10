@@ -1,6 +1,8 @@
-# Changelog
+# Opkg Changelog
 
-This NEWS file for the opkg project attempts to conform to the [KeepAChangelog](https://keepachangelog.com/en/1.0.0/) standard.
+This changelog for the opkg project attempts to conform to the [KeepAChangelog](https://keepachangelog.com/en/1.0.0/) standard.
+
+For a historic list of changes from when the project was called "Ipkg", see the [`:docs/CHANGELOG.ipkg`](./docs/CHANGELOG.ipkg) file.
 
 
 ## opkg-0.6.1
