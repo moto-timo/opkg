@@ -11,8 +11,13 @@ intercept_DATA = intercept/ldconfig intercept/depmod intercept/update-modules
 install-data-hook:
 	chmod +x $(DESTDIR)$(datadir)/opkg/intercept/*
 
-EXTRA_DIST = $(intercept_DATA) CONTRIBUTING ChangeLog.ipkg \
-	     developer-doc tests scripts
+EXTRA_DIST = \
+	$(intercept_DATA) \
+	docs/ \
+	scripts/ \
+	tests/ \
+	README.md \
+	CHANGELOG*
 
 run-tests:
 	$(MAKE) -C tests DATADIR=@datadir@ SYSCONFDIR=@sysconfdir@ VARDIR=@localstatedir@
