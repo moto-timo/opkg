@@ -5,7 +5,7 @@ AC_CONFIG_SRCDIR([libopkg/pkg.c])
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([m4])
 
-AM_INIT_AUTOMAKE([subdir-objects])
+AM_INIT_AUTOMAKE([ -Werror foreign subdir-objects])
 AC_CONFIG_HEADERS(config.h)
 
 AC_CANONICAL_HOST
