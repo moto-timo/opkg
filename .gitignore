@@ -35,6 +35,7 @@ INSTALL
 # Auto-generated config header and timestamp
 config.h
 config.h.in
+configure.lineno
 stamp-h1
 
 # The configure script itself
