@@ -90,9 +90,7 @@ opkg --version
 
 Once you have *built* your change, you can validate your changes using the integrated opkg test suite, in the `:tests/` directory.
 
-The simplest way to run the tests is using the check make-target (`make check`). This target will compile your changes (if necessary), and then run the whole suite of functional and regression tests against the compiled opkg binary.
-
-Some regression tests are expected to fail when using either the internal satisfaction solver or libsolv; they will display as such when run. Please ensure that all tests are passing before submitting your changes to the mailing list.
+See the [`:tests/README.md`](/tests/README.md) document for information about how to run the test suite and author new tests. (tldr; run `make check`)
 
 
 ----
