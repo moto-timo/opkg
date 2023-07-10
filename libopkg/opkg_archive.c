@@ -912,6 +912,14 @@ struct opkg_ar *ar_open_pkg_data_archive(const char *filename)
     ar->extract_flags = ARCHIVE_EXTRACT_OWNER | ARCHIVE_EXTRACT_PERM |
         ARCHIVE_EXTRACT_TIME | ARCHIVE_EXTRACT_UNLINK | ARCHIVE_EXTRACT_NO_OVERWRITE;
 
+#ifdef ENABLE_ACL
+    ar->extract_flags |= ARCHIVE_EXTRACT_ACL;
+#endif
+
+#ifdef ENABLE_XATTR
+    ar->extract_flags |= ARCHIVE_EXTRACT_FFLAGS | ARCHIVE_EXTRACT_XATTR;
+#endif
+
     if (opkg_config->ignore_uid)
         ar->extract_flags &= ~ARCHIVE_EXTRACT_OWNER;
 

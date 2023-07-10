@@ -158,6 +158,18 @@ return OPENSSL_VERSION_NUMBER; ],
   AC_SUBST(OPENSSL_LIBS)
 fi
 
+# check for ACL support
+AC_ARG_WITH([acl], [AS_HELP_STRING([--with-acl], [Enable ACL support])])
+if test "x$with_acl" = "xyes"; then
+  AC_DEFINE([ENABLE_ACL], [1], [Enable ACL support])
+fi
+
+# check for xattr support
+AC_ARG_WITH([xattr], [AS_HELP_STRING([--with-xattr], [Enable xattr support])])
+if test "x$with_xattr" = "xyes"; then
+  AC_DEFINE([ENABLE_XATTR], [1], [Enable xattr support])
+fi
+
 # check for libsolv solver
 AC_ARG_WITH(libsolv, AC_HELP_STRING([--with-libsolv], [Use libsolv solver support.
   ]), [], [with_libsolv="no"])
