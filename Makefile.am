@@ -13,9 +13,9 @@ install-data-hook:
 
 EXTRA_DIST = \
 	$(intercept_DATA) \
-	docs/ \
-	scripts/ \
-	tests/ \
+	docs \
+	scripts \
+	tests \
 	README.md \
 	CHANGELOG*
 
