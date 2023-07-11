@@ -157,12 +157,12 @@ cat - >${dist_base}.release-notes <<EOF
 Release Notes for ${dist_base}
 ====
 
-# TODO: Cut irrelevant parts of the NEWS file.
+# TODO: Cut irrelevant parts of the CHANGELOG file.
 EOF
 tar -xz \
 	-f ${dist_base}.tar.gz \
 	--to-stdout \
-		${dist_base}/NEWS \
+		${dist_base}/CHANGELOG.md \
 	>>${dist_base}.release-notes
 vi ${dist_base}.release-notes
 
