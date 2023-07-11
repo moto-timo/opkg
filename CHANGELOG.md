@@ -5,6 +5,16 @@ This changelog for the opkg project attempts to conform to the [KeepAChangelog](
 For a historic list of changes from when the project was called "Ipkg", see the [`:docs/CHANGELOG.ipkg`](./docs/CHANGELOG.ipkg) file.
 
 
+## opkg-0.6.2
+
+### Changed
+- [Majorly restructured](https://groups.google.com/g/opkg-devel/c/NUP1Xeii2To) the project's developer documentation to be more correct and current.
+
+### Fixed
+- [Fixed](https://git.yoctoproject.org/opkg/commit/?id=cee294e72d257417b5e55ef7a76a0fd15313e46b) a bug in the `opkg-keys` utility script which caused the script to ignore settings in the `/etc/opkg/gpg/gpg.conf` file.
+- [Fixed](https://git.yoctoproject.org/opkg/commit/?id=19e2a38c27cd98df9e5d5d959bba80136b77fa01) a compilation error in `md5.c` when using clang16+ and `-std >= gnu11`.
+
+
 ## opkg-0.6.1
 
 ### Changed
