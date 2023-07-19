@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <getopt.h>
 #include <stdlib.h>
+#include <locale.h>
 
 #include "opkg_conf.h"
 #include "opkg_cmd.h"
@@ -408,6 +409,7 @@ int main(int argc, char *argv[])
     if (opkg_conf_init())
         goto err0;
 
+    setlocale(LC_ALL, "");
     opkg_config->verbosity = NOTICE;
 
     opts = args_parse(argc, argv);
