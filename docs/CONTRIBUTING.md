@@ -10,7 +10,7 @@ This document should provide useful information for how to get started developin
 
 Clone the **source** from the Yocto project's [git server](https://git.yoctoproject.org/opkg/), and read the [README](https://git.yoctoproject.org/opkg/tree/README).
 
-Get **help** using this repository and **discuss** changes on the [opkg-devel](https://groups.google.com/g/opkg-devel) google group mailing list.
+Get **help** using this repository and **discuss** changes on the [opkg mailing list](https://lists.yoctoproject.org/g/opkg).
 
 File **bugs** and **enhancement** requests to the Yocto project's [opkg bugzilla tracker](https://bugzilla.yoctoproject.org/buglist.cgi?quicksearch=Product%3Aopkg)
 
@@ -110,13 +110,13 @@ git commit -s --trailer Closes=12345
 ----
 ## Submitting Changes Upstream
 
-**Git Send-Email.** Once you have *tested* your change, you can submit it to the opkg mainline by embedding it into an email, and sending it to the opkg-devel mailing list (<opkg-devel@googlegroups.com>). When you do, please prefix your email with the tags: `[opkg][PATCH]`.
+**Git Send-Email.** Once you have *tested* your change, you can submit it to the opkg mainline by embedding it into an email, and sending it to the opkg mailing list (<opkg@lists.yoctoproject.org>). When you do, please prefix your email with the tags: `[opkg][PATCH]`.
 
 The easiest way to do this is using the git send-email extension. You can use the following commands to configure your opkg workspace with the correct defaults.
 
 ```bash
 git config diff.renames copy
-git config format.to "opkg-devel@googlegroups.com"
+git config format.to "opkg@lists.yoctoproject.org"
 git config format.subjectprefix "opkg][PATCH"
 ```
 

@@ -7,9 +7,8 @@ This repo is part of [The Yocto Project](https://www.yoctoproject.org/), which u
 This project is a sibling to the [OpenWRT/opkg](https://openwrt.org/docs/guide-user/additional-software/opkg) project, and both are descendants of the discontinued [Itsy Package Manager (ipkg)](https://en.wikipedia.org/wiki/Ipkg).
 
 
-* Website: http://code.google.com/p/opkg/
-* Mailing List:http://groups.google.com/group/opkg-devel
 * Bug Tracker: https://bugzilla.yoctoproject.org/buglist.cgi?product=opkg
+* Mailing List: https://lists.yoctoproject.org/g/opkg
 * Git Repository: https://git.yoctoproject.org/opkg/
 
 

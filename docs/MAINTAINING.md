@@ -38,7 +38,7 @@ If there have been no substantial changes to the project source since the prior 
 
 To carry out the steps in this section, you must have:
 1. **permission** from the Yocto project to act as maintainer (obviously)
-	* If you believe it is appropriate for you to be a maintainer, start a discussion on the opkg-devel mailing list (see CONTRIBUTING) and on the Yocto project mailing list <yocto@lists.yoctoproject.org>.
+	* If you believe it is appropriate for you to be a maintainer, start a discussion on the opkg mailing list (see CONTRIBUTING) and on the Yocto project mailing list <yocto@lists.yoctoproject.org>.
 
 2. a consistent **GPG signing keypair**, for artifact signing.
 	* Google around for how to make one.
@@ -82,7 +82,7 @@ To carry out the steps in this section, you must have:
 	git push yocto v${VERSION}
 	```
 
-9.  Make an announcement to the opkg-devel mailing list that the new release is available. Include the release notes in the email.
+9.  Make an announcement to the opkg mailing list that the new release is available. Include the release notes in the email.
 
 10. Prepare an upgrade commit for the [OE-core opkg recipe](https://git.openembedded.org/openembedded-core/tree/meta/recipes-devtools/opkg). Once the source tar is available on the download mirror, upstream the recipe upgrade with the OE-core mailing list.
 
