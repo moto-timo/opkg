@@ -147,6 +147,8 @@ class Opk:
             if os.path.exists(f):
                 os.unlink(f)
 
+        return filename
+
 
 def md5sum_file(fname):
     f = open(fname, 'rb')

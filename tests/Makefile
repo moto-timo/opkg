@@ -101,7 +101,9 @@ REGRESSION_TESTS := core/01_install.py \
 		    regress/issue14459.py \
 		    misc/filehash.py \
 		    misc/update_loses_autoinstalled_flag.py \
-		    misc/version_comparisons.py
+		    misc/version_comparisons.py \
+		    security/cve_2020_7982.py \
+# intentional blank line
 
 RUN_TESTS := $(REGRESSION_TESTS:%.py=run-%.py)
 
@@ -116,6 +118,10 @@ run-regress/%.py: regress/%.py
 	@PYTHONPATH=. $(PYTHON) $^
 
 run-misc/%.py: misc/%.py
+	@echo $^
+	@PYTHONPATH=. $(PYTHON) $^
+
+run-security/%.py: security/%.py
 	@echo $^
 	@PYTHONPATH=. $(PYTHON) $^
 
