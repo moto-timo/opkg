@@ -15,8 +15,6 @@ Entries in this section marked with **[1.0]** must be completed before we call O
 
 * Convert the project to use build tooling which is more modern than autotools. It seems the only reason autotools was chosen for the initial implementation was that "it worked". But no one was an expert at it and the existing implementation is rather old and crusty. It pre-dates git and tends to leave clutter around, and doesn't understand modern project layouts. Investigate the modern ecology of C/C++ build tooling (start w/ cmake) and try to follow the winds to find something better.
 
-* **[1.0]** Move the project off of Google Code; the service has been officially deprecated for many years and might just disappear one day. It isn't a stable or modern host for our mailing list. You can't even subscribe to the mailing list without either having a gmail account, or using an undocumented email API.
-
 * Publish a docker container which can build opkg. This is a nice-to-have for any modern project, since it can get developers onboarded with making and testing contributions quickly. Start by talking to Alex Stewart, who already has a container that he uses for his development.
 
 * Publish a docker container which runs opkg. It is fairly common contemporarily to give users a one-button way to run your application in a sandbox and play around with its abilities. I think this would go a long way towards driving opkg adoption.
