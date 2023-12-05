@@ -5,6 +5,16 @@ This changelog for the opkg project attempts to conform to the [KeepAChangelog](
 For a historic list of changes from when the project was called "Ipkg", see the [`:docs/CHANGELOG.ipkg`](./docs/CHANGELOG.ipkg) file.
 
 
+## opkg-0.6.3
+
+## Added
+- [Added](https://git.yoctoproject.org/opkg/commit/?id=ef743b75745939df210a9e6a70a44d69181ef05a) new configuration options to enable preserving ACLs and XAttrs when extracting IPKs.
+
+## Fixed
+- [Fixed](https://git.yoctoproject.org/opkg/commit/?id=9e62a38a4a52974007e9ea174504c42069da1a02) a bug where some library locales might mismatch the user environment. Opkg will now consistently honor the environment's locale.
+
+
+
 ## opkg-0.6.2
 
 ### Changed
