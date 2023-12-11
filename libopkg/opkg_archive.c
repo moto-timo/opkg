@@ -20,6 +20,7 @@
 
 #include <archive.h>
 #include <archive_entry.h>
+#include <libgen.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -797,8 +798,9 @@ int gz_write_archive(const char *filename, const char *gz_filename)
     }
 
     /* Remove path hierarchy, as we are only compressing a single file */
-    archive_entry_set_pathname(entry, basename(filename));
-
+    char* tmp = xstrdup(filename);
+    archive_entry_set_pathname(entry, basename(tmp));
+    free(tmp);
     r = archive_write_header(a, entry);
     if (r != ARCHIVE_OK) {
         opkg_msg(ERROR, "Failed to create compressed file: '%s' : %s (errno=%d)",

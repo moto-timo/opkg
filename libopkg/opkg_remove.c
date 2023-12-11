@@ -20,6 +20,7 @@
 
 #include "config.h"
 
+#include <libgen.h>
 #include <stdio.h>
 #include <glob.h>
 #include <unistd.h>
