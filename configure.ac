@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script
-AC_INIT([opkg], [0.6.3+git])
+AC_INIT([opkg],[0.6.3+git])
 AC_CONFIG_SRCDIR([libopkg/pkg.c])
 
 AC_CONFIG_AUX_DIR([conf])
@@ -9,7 +9,7 @@ AM_INIT_AUTOMAKE([ -Werror foreign subdir-objects])
 AC_CONFIG_HEADERS(config.h)
 
 AC_CANONICAL_HOST
-AC_GNU_SOURCE
+AC_USE_SYSTEM_EXTENSIONS
 
 # Disable C++/Fortran checks
 define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])
@@ -27,7 +27,7 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 # The current libopkg API is deprecated so only build it if requested
 AC_ARG_ENABLE(libopkg-api,
-	      AC_HELP_STRING([--enable-libopkg-api], [Enable deprecated libopkg
+	      AS_HELP_STRING([--enable-libopkg-api],[Enable deprecated libopkg
 			      API. [[default=no]] ]),
 	      [want_libopkg_api="$enableval"], [want_libopkg_api="no"])
 AM_CONDITIONAL(HAVE_LIBOPKG_API, test "x$want_libopkg_api" = "xyes")
@@ -38,7 +38,7 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AM_PROG_INSTALL_STRIP
-AC_PROG_LIBTOOL
+LT_INIT
 PKG_PROG_PKG_CONFIG([0.20])
 
 # Checks for libraries
@@ -57,7 +57,7 @@ fi
 
 # check for xz
 AC_ARG_ENABLE(xz,
-              AC_HELP_STRING([--enable-xz], [Enable xz compressor support
+              AS_HELP_STRING([--enable-xz],[Enable xz compressor support
       [default=yes] ]),
     [want_xz="$enableval"], [want_xz="yes"])
 
@@ -68,7 +68,7 @@ AM_CONDITIONAL(HAVE_XZ, test "$want_xz" = "yes")
 
 # check for bzip2
 AC_ARG_ENABLE(bzip2,
-              AC_HELP_STRING([--enable-bzip2], [Enable bzip2 compressor support
+              AS_HELP_STRING([--enable-bzip2],[Enable bzip2 compressor support
       [default=no] ]),
     [want_bzip2="$enableval"], [want_bzip2="no"])
 
@@ -79,7 +79,7 @@ AM_CONDITIONAL(HAVE_BZIP2, test "$want_bzip2" = "yes")
 
 # check for lz4
 AC_ARG_ENABLE(lz4,
-              AC_HELP_STRING([--enable-lz4], [Enable lz4 compressor support
+              AS_HELP_STRING([--enable-lz4],[Enable lz4 compressor support
       [default=no] ]),
     [want_lz4="$enableval"], [want_lz4="no"])
 
@@ -90,7 +90,7 @@ AM_CONDITIONAL(HAVE_LZ4, test "$want_lz4" = "yes")
 
 # check for zstd
 AC_ARG_ENABLE(zstd,
-              AC_HELP_STRING([--enable-zstd], [Enable zstd compressor support
+              AS_HELP_STRING([--enable-zstd],[Enable zstd compressor support
       [default=no] ]),
     [want_zstd="$enableval"], [want_zstd="no"])
 
@@ -101,7 +101,7 @@ AM_CONDITIONAL(HAVE_ZSTD, test "$want_zstd" = "yes")
 
 # check for libcurl
 AC_ARG_ENABLE(curl,
-              AC_HELP_STRING([--enable-curl], [Enable downloading with curl
+              AS_HELP_STRING([--enable-curl],[Enable downloading with curl
       [[default=yes]] ]),
     [want_curl="$enableval"], [want_curl="yes"])
 
@@ -113,7 +113,7 @@ AM_CONDITIONAL(HAVE_CURL, test "x$want_curl" = "xyes")
 
 # check for sha256
 AC_ARG_ENABLE(sha256,
-              AC_HELP_STRING([--enable-sha256], [Enable sha256sum check
+              AS_HELP_STRING([--enable-sha256],[Enable sha256sum check
       [[default=no]] ]),
     [want_sha256="$enableval"], [want_sha256="no"])
 
@@ -124,7 +124,7 @@ AM_CONDITIONAL(HAVE_SHA256, test "x$want_sha256" = "xyes")
 
 # check for libssl-curl
 AC_ARG_ENABLE(ssl-curl,
-              AC_HELP_STRING([--enable-ssl-curl], [Enable certificate authentication with curl
+              AS_HELP_STRING([--enable-ssl-curl],[Enable certificate authentication with curl
                               [[default="yes"]] ]),
                               [want_sslcurl="$enableval"], [want_sslcurl="yes"])
 
@@ -143,14 +143,13 @@ if test "x$NEED_SSL_LIBS" = "xyes"; then
   else
           OPENSSL_LIBS="-lcrypto -lssl"
           dnl If pkg-config fails, run compile/link test.
-          AC_TRY_LINK([
+          AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #include <openssl/opensslv.h>
-], [
-return OPENSSL_VERSION_NUMBER; ],
-          [
+]], [[
+return OPENSSL_VERSION_NUMBER; ]])],[
             AC_MSG_RESULT(yes)
 
-          ], [
+          ],[
             AC_MSG_RESULT(no)
             AC_MSG_ERROR(OpenSSL not found)
           ])
@@ -171,7 +170,7 @@ if test "x$with_xattr" = "xyes"; then
 fi
 
 # check for libsolv solver
-AC_ARG_WITH(libsolv, AC_HELP_STRING([--with-libsolv], [Use libsolv solver support.
+AC_ARG_WITH(libsolv, AS_HELP_STRING([--with-libsolv],[Use libsolv solver support.
   ]), [], [with_libsolv="no"])
 
 if test "x$with_libsolv" != "xno"; then
@@ -198,7 +197,7 @@ dnl GPGME
 dnl **********
 
 AC_ARG_ENABLE(gpg,
-    AC_HELP_STRING([--enable-gpg], [Enable signature checking with gpgme
+    AS_HELP_STRING([--enable-gpg],[Enable signature checking with gpgme
       [[default=yes]] ]),
     [want_gpgme="$enableval"], [want_gpgme="yes"])
 
@@ -244,8 +243,6 @@ AC_SUBST(GPGERR_CFLAGS)
 AC_SUBST(GPGERR_LIBS)
 
 # Checks for header files
-AC_HEADER_DIRENT
-AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS([errno.h fcntl.h memory.h regex.h stddef.h stdlib.h string.h strings.h unistd.h utime.h])
 
@@ -262,16 +259,10 @@ AC_CHECK_MEMBERS([struct stat.st_rdev])
 AC_C_BIGENDIAN(BIGENDIAN_CFLAGS="-DWORDS_BIGENDIAN=1",)
 AC_SUBST(BIGENDIAN_CFLAGS)
 
-# Don't do annoying tests that don't work when cross-compiling, just trust them.
-# The AC_FUNC_MEMCMP test doesn't work during a cross-compile, disable.
-# AC_FUNC_MEMCMP
-# The AC_FUNC_STAT test doesn't work during a cross-compile, disable.
-# AC_FUNC_STAT
-
 # Checks for library functions
 AC_FUNC_CHOWN
 AC_FUNC_FORK
-AC_TYPE_SIGNAL
+
 AC_FUNC_UTIME_NULL
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([memmove memset mkdir regcomp strchr strcspn strdup strerror strndup strrchr strstr strtol strtoul sysinfo utime])
@@ -284,8 +275,7 @@ fi
 
 AC_SUBST([CLEAN_DATE])
 
-AC_OUTPUT(
-    Makefile
+AC_CONFIG_FILES([Makefile
     libopkg/Makefile
     src/Makefile
     utils/Makefile
@@ -294,7 +284,8 @@ AC_OUTPUT(
     man/opkg.1
     man/opkg-key.1
     man/opkg.conf.5
-    )
+    ])
+AC_OUTPUT
 
 # Issue this warning at the end so the user is likely to see it
 if test "x$want_libopkg_api" = "xyes"; then
