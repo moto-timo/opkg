@@ -174,9 +174,9 @@ AC_ARG_WITH(libsolv, AS_HELP_STRING([--with-libsolv],[Use libsolv solver support
   ]), [], [with_libsolv="no"])
 
 if test "x$with_libsolv" != "xno"; then
-    # do not allow opkg to be built with both old API and extrnal solver support
+    # do not allow opkg to be built with both old API and external solver support
     if test "x$want_libopkg_api" = "xyes"; then
-        AC_MSG_ERROR(External solver support not compatable with deprecated libopkg API!)
+        AC_MSG_ERROR(External solver support not compatible with deprecated libopkg API!)
     fi
 
     AC_MSG_CHECKING([for solver])
@@ -186,6 +186,7 @@ if test "x$with_libsolv" != "xno"; then
     AC_SUBST(SOLVER_CFLAGS)
     AC_SUBST(SOLVER_LIBS)
 else
+    AC_MSG_WARN([The opkg internal sat-solver is marked for DEPRECATION in a future release. Consider using the libsolv solver ("--with-libsolv") instead.])
     AC_DEFINE(HAVE_SOLVER_INTERNAL,1,[Define if you want to use the internal solver])
 fi
 
