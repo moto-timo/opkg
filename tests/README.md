@@ -35,7 +35,7 @@ Then just run `make check` again.
 
 ### Opkg Debug Output
 
-The `opkgcl` module tests for an environment variable `OPKG_DEBUG_CMDS`. If it is set to "True", the `stderr` and `stdout` from opkg calls made during the test run will be printed to `stdout`.
+The `opkgcl` module tests for an environment variable `DEBUG_OPKG_CMDS`. If it is set to "True", the `stderr` and `stdout` from opkg calls made during the test run will be printed to `stdout`.
 
 
 ----
