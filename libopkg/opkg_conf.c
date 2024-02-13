@@ -749,9 +749,6 @@ int opkg_conf_load(void)
         opkg_config->lock_file = tmp;
     }
 
-    if (r < 0)
-        goto err2;
-
     if (opkg_config->tmp_dir)
         tmp_dir_base = opkg_config->tmp_dir;
     else
@@ -764,7 +761,7 @@ int opkg_conf_load(void)
     opkg_config->tmp_dir = mkdtemp(tmp);
     if (opkg_config->tmp_dir == NULL) {
         opkg_perror(ERROR, "Creating temp dir %s failed", tmp);
-        goto err3;
+        goto err2;
     }
 
     pkg_hash_init();
@@ -836,7 +833,7 @@ int opkg_conf_load(void)
                     sizeof(OPKG_CONF_GPG_TRUST_ANY)) !=0)
         {
             opkg_perror(ERROR, "Unrecognized gpg_trust_level %s\n", opkg_config->gpg_trust_level);
-            goto err3;
+            goto err2;
         }
     }
 #endif
@@ -864,13 +861,13 @@ int opkg_conf_load(void)
 
     r = resolve_pkg_dest_list();
     if (r != 0)
-        goto err4;
+        goto err3;
 
     nv_pair_list_deinit(&opkg_config->tmp_dest_list);
 
     return 0;
 
- err4:
+ err3:
     pkg_hash_deinit();
     hash_table_deinit(&opkg_config->file_hash);
     hash_table_deinit(&opkg_config->dir_hash);
@@ -879,7 +876,6 @@ int opkg_conf_load(void)
     r = rmdir(opkg_config->tmp_dir);
     if (r == -1)
         opkg_perror(ERROR, "Couldn't remove dir %s", opkg_config->tmp_dir);
- err3:
  err2:
  err1:
     pkg_src_list_deinit(&opkg_config->pkg_src_list);
