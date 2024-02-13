@@ -232,6 +232,10 @@ No action \- download only
 \fB\--nodeps\fR
 Do not follow dependencies
 .TP
+\fB\--install-recommends\fR
+Install any recommended packages. This flag overrides the no_install_recommends
+configuration option.
+.TP
 \fB\--no-install-recommends\fR
 Do not install any recommended packages
 .TP
