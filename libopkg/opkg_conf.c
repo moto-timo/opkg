@@ -230,6 +230,8 @@ static void opkg_conf_free(void)
     opkg_config->conf_file = NULL;
     free(opkg_config->dest_str);
     opkg_config->dest_str = NULL;
+    free(opkg_config->fields_filter);
+    opkg_config->fields_filter = NULL;
 }
 
 int opkg_conf_get_option(char *name, void *value)
@@ -820,6 +822,8 @@ int opkg_conf_finalize(void)
     opkg_config->tmp_dir = mkdtemp(tmp);
     if (opkg_config->tmp_dir == NULL) {
         opkg_perror(ERROR, "Creating temp dir %s failed", tmp);
+        free(tmp);
+        tmp = NULL;
         goto err;
     }
 
