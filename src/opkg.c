@@ -129,38 +129,41 @@ static struct option long_options[] = {
     {0, 0, 0, 0}
 };
 
-static int args_parse(int argc, char *argv[])
+const char *short_options = "Ad:f:no:p:l:t:vV::";
+
+static void store_str_arg(char **dest, const char *arg)
+{
+    free(*dest);
+    *dest = xstrdup(arg);
+}
+
+/*
+ * Performs stage 1 command line argument parsing.
+ *
+ * Stage 1 command line parsing handles all arguments that are required to parse
+ * the configuration files.
+ */
+static int args_parse_stage1(int argc, char *argv[])
 {
     int c;
     int option_index = 0;
     int parse_err = 0;
-    char *tuple, *targ;
     char *solver_version = NULL;
 
+    // Make sure that getopt starts from the beginning
+    optind = 1;
     while (1) {
-        c = getopt_long(argc, argv, "Ad:f:no:p:l:t:vV::", long_options,
+        c = getopt_long(argc, argv, short_options, long_options,
                              &option_index);
         if (c == -1)
             break;
 
         switch (c) {
-        case 'A':
-            opkg_config->query_all = 1;
-            break;
-        case 'd':
-            opkg_config->dest_str = xstrdup(optarg);
-            break;
         case 'f':
             opkg_config->conf_file = xstrdup(optarg);
             break;
         case 'o':
             opkg_config->offline_root = xstrdup(optarg);
-            break;
-        case 't':
-            opkg_config->tmp_dir = xstrdup(optarg);
-            break;
-        case 'l':
-            opkg_config->lists_dir = xstrdup(optarg);
             break;
         case 'v':
             solver_version = opkg_solver_version_alloc();
@@ -175,6 +178,62 @@ static int args_parse(int argc, char *argv[])
             opkg_config->verbosity = INFO;
             if (optarg != NULL)
                 opkg_config->verbosity = atoi(optarg);
+            break;
+        case '?':
+            parse_err = -1;
+            break;
+        default:
+            // All other arguments are handled in stage 2 command line parsing.
+            break;
+        }
+    }
+
+    if (parse_err)
+        return parse_err;
+    else
+        return optind;
+}
+
+/*
+ * Performs stage 2 command line argument parsing.
+ *
+ * Stage 2 command line parsing handles all other arguments. Stage 2 parsing
+ * is performed after the configuration files have been loaded thus allowing
+ * configuration options to be overridden from the command line.
+ */
+static int args_parse_stage2(int argc, char *argv[])
+{
+    int c;
+    int option_index = 0;
+    int parse_err = 0;
+    char *tuple, *targ;
+
+    // Make sure that getopt starts from the beginning
+    optind = 1;
+    while (1) {
+        c = getopt_long(argc, argv, short_options, long_options,
+                             &option_index);
+        if (c == -1)
+            break;
+
+        switch (c) {
+        case 'A':
+            opkg_config->query_all = 1;
+            break;
+        case 'd':
+            store_str_arg(&opkg_config->dest_str, optarg);
+            break;
+        case 'o':
+        case 'f':
+        case 'v':
+        case 'V':
+            // Already handled in stage 1 command line parsing
+            break;
+        case 't':
+            store_str_arg(&opkg_config->tmp_dir, optarg);
+            break;
+        case 'l':
+            store_str_arg(&opkg_config->lists_dir, optarg);
             break;
         case ARGS_OPT_AUTOREMOVE:
             opkg_config->autoremove = 1;
@@ -249,7 +308,7 @@ static int args_parse(int argc, char *argv[])
             opkg_config->download_only = 1;
             break;
         case ARGS_OPT_CACHE_DIR:
-            opkg_config->cache_dir = xstrdup(optarg);
+            store_str_arg(&opkg_config->cache_dir, optarg);
             break;
         case ARGS_OPT_HOST_CACHE_DIR:
             opkg_config->host_cache_dir = 1;
@@ -264,13 +323,10 @@ static int args_parse(int argc, char *argv[])
            opkg_config->short_description = 1;
            break;
         case ARGS_OPT_FIELDS_FILTER:
-            opkg_config->fields_filter = xstrdup(optarg);
+            store_str_arg(&opkg_config->fields_filter, optarg);
             break;
         case ARGS_OPT_COMBINE:
             opkg_config->combine = 1;
-            break;
-        case '?':
-            parse_err = -1;
             break;
         default:
             fprintf(stderr, "Encountered unhandled option %d during command line parsing\n", c);
@@ -409,7 +465,7 @@ int main(int argc, char *argv[])
     setlocale(LC_ALL, "");
     opkg_config->verbosity = NOTICE;
 
-    opts = args_parse(argc, argv);
+    opts = args_parse_stage1(argc, argv);
     if (opts == argc || opts < 0) {
         fprintf(stderr, "opkg must have one sub-command argument\n");
         usage();
@@ -449,7 +505,17 @@ int main(int argc, char *argv[])
     opkg_config->pfm = cmd->pfm;
 
     if (!noloadconf) {
-        if (opkg_conf_load())
+        if (opkg_conf_read())
+            goto err0;
+    }
+
+    if (args_parse_stage2(argc, argv) < 0) {
+        fprintf(stderr, "Stage 2 argument parsing failed.\n");
+        usage();
+    }
+
+    if (!noloadconf) {
+        if (opkg_conf_finalize())
             goto err0;
     }
 
