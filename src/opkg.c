@@ -269,14 +269,11 @@ static int args_parse(int argc, char *argv[])
         case ARGS_OPT_COMBINE:
             opkg_config->combine = 1;
             break;
-        case ':':
-            parse_err = -1;
-            break;
         case '?':
             parse_err = -1;
             break;
         default:
-            printf("Confusion: getopt_long returned %d\n", c);
+            fprintf(stderr, "Encountered unhandled option %d during command line parsing\n", c);
         }
     }
 
