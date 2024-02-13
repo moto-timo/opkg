@@ -187,6 +187,8 @@ extern opkg_conf_t *opkg_config;
 
 int opkg_conf_init(void);
 int opkg_conf_load(void);
+int opkg_conf_read(void);
+int opkg_conf_finalize(void);
 void opkg_conf_deinit(void);
 
 int opkg_conf_write_status_files(void);

@@ -707,10 +707,20 @@ int opkg_unlock()
 
 int opkg_conf_load(void)
 {
+    int r = 0;
+
+    r = opkg_conf_read();
+    if (r)
+        return r;
+
+    return opkg_conf_finalize();
+}
+
+int opkg_conf_read(void)
+{
     unsigned int i;
     int r;
     int glob_ret;
-    char *tmp, *tmp_dir_base;
     glob_t globbuf;
     char *etc_opkg_conf_pattern;
 
@@ -768,6 +778,17 @@ int opkg_conf_load(void)
 
         globfree(&globbuf);
     }
+
+    return 0;
+err:
+    opkg_conf_free();
+    return -1;
+}
+
+int opkg_conf_finalize(void)
+{
+    int r;
+    char *tmp, *tmp_dir_base;
 
     /* Option not available on the internal solver since it currently
      * can't merge transactions, resulting in one solve per operation */
@@ -899,17 +920,16 @@ int opkg_conf_load(void)
 
     r = resolve_pkg_dest_list();
     if (r != 0)
-        goto err1;
+        goto err;
 
     nv_pair_list_deinit(&opkg_config->tmp_dest_list);
-
     return 0;
-
- err1:
-    r = rmdir(opkg_config->tmp_dir);
-    if (r == -1)
-        opkg_perror(ERROR, "Couldn't remove dir %s", opkg_config->tmp_dir);
- err:
+err:
+    if (opkg_config->tmp_dir) {
+        r = rmdir(opkg_config->tmp_dir);
+        if (r == -1)
+            opkg_perror(ERROR, "Couldn't remove dir %s", opkg_config->tmp_dir);
+    }
     opkg_conf_free();
     return -1;
 }
