@@ -194,6 +194,44 @@ static void parse_pkg_src_options_str(pkg_src_options_t *src_options,
     }
 }
 
+static void opkg_conf_free(void)
+{
+    int i = 0;
+    char **tmp_val = NULL;
+
+    pkg_hash_deinit();
+
+    hash_table_deinit(&opkg_config->file_hash);
+    hash_table_deinit(&opkg_config->dir_hash);
+    hash_table_deinit(&opkg_config->obs_file_hash);
+
+    pkg_src_list_deinit(&opkg_config->pkg_src_list);
+    pkg_src_list_deinit(&opkg_config->dist_src_list);
+
+    pkg_dest_list_deinit(&opkg_config->pkg_dest_list);
+
+    nv_pair_list_deinit(&opkg_config->arch_list);
+    nv_pair_list_deinit(&opkg_config->tmp_dest_list);
+
+    str_list_deinit(&opkg_config->exclude_list);
+    str_list_deinit(&opkg_config->ignore_recommends_list);
+
+    for (i = 0; options[i].name; i++) {
+        if (options[i].type == OPKG_OPT_TYPE_STRING) {
+            tmp_val = (char **)options[i].value;
+            if (*tmp_val) {
+                free(*tmp_val);
+                *tmp_val = NULL;
+            }
+        }
+    }
+
+    free(opkg_config->conf_file);
+    opkg_config->conf_file = NULL;
+    free(opkg_config->dest_str);
+    opkg_config->dest_str = NULL;
+}
+
 int opkg_conf_get_option(char *name, void *value)
 {
     opkg_option_t *o;
@@ -672,7 +710,7 @@ int opkg_conf_load(void)
     unsigned int i;
     int r;
     int glob_ret;
-    char *tmp, *tmp_dir_base, **tmp_val;
+    char *tmp, *tmp_dir_base;
     glob_t globbuf;
     char *etc_opkg_conf_pattern;
 
@@ -686,12 +724,12 @@ int opkg_conf_load(void)
         r = stat(opkg_config->conf_file, &st);
         if (r == -1) {
             opkg_perror(ERROR, "Couldn't stat %s", opkg_config->conf_file);
-            goto err0;
+            goto err;
         }
         r = opkg_conf_parse_file(opkg_config->conf_file,
                 &opkg_config->pkg_src_list, &opkg_config->dist_src_list);
         if (r != 0)
-            goto err1;
+            goto err;
     } else {
         const char *conf_file_dir = getenv("OPKG_CONF_DIR");
         if (conf_file_dir == NULL)
@@ -709,7 +747,7 @@ int opkg_conf_load(void)
         if (glob_ret && glob_ret != GLOB_NOMATCH) {
             free(etc_opkg_conf_pattern);
             globfree(&globbuf);
-            goto err1;
+            goto err;
         }
 
         free(etc_opkg_conf_pattern);
@@ -724,7 +762,7 @@ int opkg_conf_load(void)
                         &opkg_config->dist_src_list);
             if (r < 0) {
                 globfree(&globbuf);
-                goto err1;
+                goto err;
             }
         }
 
@@ -761,7 +799,7 @@ int opkg_conf_load(void)
     opkg_config->tmp_dir = mkdtemp(tmp);
     if (opkg_config->tmp_dir == NULL) {
         opkg_perror(ERROR, "Creating temp dir %s failed", tmp);
-        goto err2;
+        goto err;
     }
 
     pkg_hash_init();
@@ -833,7 +871,7 @@ int opkg_conf_load(void)
                     sizeof(OPKG_CONF_GPG_TRUST_ANY)) !=0)
         {
             opkg_perror(ERROR, "Unrecognized gpg_trust_level %s\n", opkg_config->gpg_trust_level);
-            goto err2;
+            goto err;
         }
     }
 #endif
@@ -861,65 +899,30 @@ int opkg_conf_load(void)
 
     r = resolve_pkg_dest_list();
     if (r != 0)
-        goto err3;
+        goto err1;
 
     nv_pair_list_deinit(&opkg_config->tmp_dest_list);
 
     return 0;
 
- err3:
-    pkg_hash_deinit();
-    hash_table_deinit(&opkg_config->file_hash);
-    hash_table_deinit(&opkg_config->dir_hash);
-    hash_table_deinit(&opkg_config->obs_file_hash);
-
+ err1:
     r = rmdir(opkg_config->tmp_dir);
     if (r == -1)
         opkg_perror(ERROR, "Couldn't remove dir %s", opkg_config->tmp_dir);
- err2:
- err1:
-    pkg_src_list_deinit(&opkg_config->pkg_src_list);
-    pkg_src_list_deinit(&opkg_config->dist_src_list);
-    pkg_dest_list_deinit(&opkg_config->pkg_dest_list);
-    nv_pair_list_deinit(&opkg_config->arch_list);
-
-    for (i = 0; options[i].name; i++) {
-        if (options[i].type == OPKG_OPT_TYPE_STRING) {
-            tmp_val = (char **)options[i].value;
-            if (*tmp_val) {
-                free(*tmp_val);
-                *tmp_val = NULL;
-            }
-        }
-    }
- err0:
-    nv_pair_list_deinit(&opkg_config->tmp_dest_list);
-    free(opkg_config->dest_str);
-    free(opkg_config->conf_file);
-
+ err:
+    opkg_conf_free();
     return -1;
 }
 
 void opkg_conf_deinit(void)
 {
     int i;
-    char **tmp;
 
     if (opkg_config->tmp_dir && file_exists(opkg_config->tmp_dir))
         rm_r(opkg_config->tmp_dir);
 
     if (opkg_config->volatile_cache && file_exists(opkg_config->cache_dir))
         rm_r(opkg_config->cache_dir);
-
-    free(opkg_config->dest_str);
-    free(opkg_config->conf_file);
-
-    pkg_src_list_deinit(&opkg_config->pkg_src_list);
-    pkg_src_list_deinit(&opkg_config->dist_src_list);
-    pkg_dest_list_deinit(&opkg_config->pkg_dest_list);
-    nv_pair_list_deinit(&opkg_config->arch_list);
-    str_list_deinit(&opkg_config->exclude_list);
-    str_list_deinit(&opkg_config->ignore_recommends_list);
 
     if (opkg_config->verbosity >= DEBUG) {
         hash_print_stats(&opkg_config->pkg_hash);
@@ -928,19 +931,10 @@ void opkg_conf_deinit(void)
         hash_print_stats(&opkg_config->obs_file_hash);
     }
 
-    pkg_hash_deinit();
-    hash_table_deinit(&opkg_config->file_hash);
-    hash_table_deinit(&opkg_config->dir_hash);
-    hash_table_deinit(&opkg_config->obs_file_hash);
+    opkg_conf_free();
 
     for (i = 0; options[i].name; i++) {
-        if (options[i].type == OPKG_OPT_TYPE_STRING) {
-            tmp = (char **)options[i].value;
-            if (*tmp) {
-                free(*tmp);
-                *tmp = NULL;
-            }
-        } else {
+        if (options[i].type != OPKG_OPT_TYPE_STRING) {
             int *val = (int *)options[i].value;
             *val = 0;
         }
