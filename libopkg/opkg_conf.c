@@ -90,6 +90,7 @@ static opkg_option_t options[] = {
     {"cache_local_files", OPKG_OPT_TYPE_BOOL, &_conf.cache_local_files},
     {"verbose_status_file", OPKG_OPT_TYPE_BOOL, &_conf.verbose_status_file},
     {"compress_list_files", OPKG_OPT_TYPE_BOOL, &_conf.compress_list_files},
+    {"retry_get_lock", OPKG_OPT_TYPE_BOOL, &_conf.retry_get_lock},
 #if defined(HAVE_GPGME)
     {"gpg_dir", OPKG_OPT_TYPE_STRING, &_conf.gpg_dir},
     {"gpg_trust_level", OPKG_OPT_TYPE_STRING, &_conf.gpg_trust_level},
@@ -660,7 +661,12 @@ int opkg_lock()
         return -1;
     }
 
-    r = lockf(lock_fd, F_TLOCK, (off_t) 0);
+    if (opkg_config->retry_get_lock) {
+        r = lockf(lock_fd, F_LOCK, (off_t) 0);
+    }
+    else {
+        r = lockf(lock_fd, F_TLOCK, (off_t) 0);
+    }
     if (r == -1) {
         opkg_perror(ERROR, "Could not lock %s", opkg_config->lock_file);
         r = close(lock_fd);

@@ -67,6 +67,7 @@ enum {
     ARGS_OPT_HOST_CACHE_DIR,
     ARGS_OPT_SHORT_DESCRIPTION,
     ARGS_OPT_FIELDS_FILTER,
+    ARGS_OPT_RETRY_GET_LOCK,
 };
 
 static struct option long_options[] = {
@@ -126,6 +127,8 @@ static struct option long_options[] = {
     {"volatile-cache", 0, 0, ARGS_OPT_VOLATILE_CACHE},
     {"short-description", 0, 0, ARGS_OPT_SHORT_DESCRIPTION},
     {"fields", 1, 0, ARGS_OPT_FIELDS_FILTER},
+    {"retry-get-lock", 0, 0, ARGS_OPT_RETRY_GET_LOCK},
+    {"retry_get_lock", 0, 0, ARGS_OPT_RETRY_GET_LOCK},
     {"verbosity", 2, 0, 'V'},
     {"version", 0, 0, 'v'},
     {0, 0, 0, 0}
@@ -330,6 +333,9 @@ static int args_parse_stage2(int argc, char *argv[])
         case ARGS_OPT_FIELDS_FILTER:
             store_str_arg(&opkg_config->fields_filter, optarg);
             break;
+        case ARGS_OPT_RETRY_GET_LOCK:
+            store_str_arg(&opkg_config->retry_get_lock = 1);
+            break;
         case ARGS_OPT_COMBINE:
             opkg_config->combine = 1;
             break;
@@ -442,7 +448,9 @@ static void usage()
     printf("\t                                automatically to satisfy dependencies\n");
     printf("\t--host-cache-dir                Don't place cache in offline root dir.\n");
     printf("\t--volatile-cache                Use volatile cache.\n");
-    printf("\t                                Volatile cache will be cleared on exit\n");
+    printf("\t                                Volatile cache will be cleared on exit\n")j;
+    printf("\t--retry-get-lock                Allow retry if we fail to get lock file.\n");
+    printf("\t                                This helps with systemd postinsts service.\n");
     printf("\n");
 
     printf(" glob could be something like 'pkgname*' '*file*' or similar\n");
